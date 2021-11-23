@@ -18,7 +18,6 @@ load_pubkey() {
 
     mkdir -p ~/.ssh
     cat > ~/.ssh/config <<EOF
-StrictHostKeyChecking no
 LogLevel quiet
 EOF
     if [ ! -z "$private_key_user" ]; then
@@ -34,6 +33,16 @@ EOF
     chmod 0600 ~/.ssh/config
   fi
 }
+
+load_github_host_key() {
+    known_fingerprint="SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8"
+    scanned_fingerprint="$(ssh-keyscan -t rsa github.com | tee github-print-temp | ssh-keygen -lf -)"
+    if [[ $scanned_fingerprint == *$known_fingerprint* ]]; then
+        mkdir ~/.ssh && touch ~/.ssh/known_hosts
+        cat github-print-temp  >> ~/.ssh/known_hosts
+    fi
+}
+
 
 configure_https_tunnel() {
   tunnel=$(jq -r '.source.https_tunnel // empty' <<< "$1")
