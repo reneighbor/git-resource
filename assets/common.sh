@@ -35,9 +35,9 @@ EOF
 }
 
 load_github_host_key() {
-    known_fingerprint="SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8"
+    known_fingerprints=["SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8", "SHA256:p2QAMXNIC1TJYWeIOttrVc98/R1BUFWu3/LiyKgUfQM", "SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU"]
     scanned_fingerprint="$(ssh-keyscan -t rsa github.com | tee github-print-temp | ssh-keygen -lf -)"
-    if [[ $scanned_fingerprint == *$known_fingerprint* ]]; then
+    if [[ $arr{*} == $scanned_fingerprint ]]; then
         mkdir ~/.ssh && touch ~/.ssh/known_hosts
         cat github-print-temp  >> ~/.ssh/known_hosts
     fi
